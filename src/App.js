@@ -19,6 +19,14 @@ function App() {
   const contract = new ethers.Contract( "0xe59De8B98EdCa548fe863EBa341c68f04A673505" , abi , provider );
   const hardCap = 1000;
 
+  async function listenToEvent() {
+    contract.on("Transfer", ()=>{
+      getInfoTKN();
+    })
+  }
+
+  listenToEvent();
+
   async function getInfoTKN() {
     const getNameTKN = await contract.name();
     setNameTKN(getNameTKN);
