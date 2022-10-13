@@ -1,11 +1,45 @@
 import logo from './logo.svg';
 import './App.css';
 import Buttons from './components/Buttons';
+import { ethers } from "ethers";
+import abi from './abi/token';
+import { useEffect, useState, useRef } from 'react';
 
 function App() {
+
+  const [nameTKN, setNameTKN] = useState(null);
+  const [remaining, setRemaining] = useState(null);
+  const [pourcentage, setPourcentage] = useState(null);
+
+  const progressBarIndicator = useRef();
+  let cssPourcentage;
+
+  /*WEB Connection*/
+  const provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/97c0878953c249c8bce26055b5e0ee94");
+  const contract = new ethers.Contract( "0xe59De8B98EdCa548fe863EBa341c68f04A673505" , abi , provider );
+  const hardCap = 1000;
+
+  async function getInfoTKN() {
+    const getNameTKN = await contract.name();
+    setNameTKN(getNameTKN);
+
+    let getSupplied = await contract.totalSupply();
+       setRemaining(1000-getSupplied);
+
+    let getPourcentage = Math.floor(100*(getSupplied/hardCap));
+    setPourcentage(getPourcentage);
+  }
+
+  useEffect(()=>{
+    const pourcentCss = pourcentage+'%';
+    progressBarIndicator.current.style.height = pourcentCss;
+    console.log('useeffect')
+  },[pourcentage]);
+  
+  getInfoTKN();
+
   return (
     <div>
-
       <header id="menuHeader" className='flex items-center justify-around' style={{backgroundColor:'pink'}}>
         <img className='h-32 p-6' src="./image/logo-desktop-header.svg" alt="Big Eyes logo"/>
         <div id="mobileBouton" className='flex flex-col md:flex-row md:items-center my-2'>
@@ -48,8 +82,8 @@ function App() {
                 <h1>Stage 5 has started!</h1>
                 <p className='text-center text-gray-400 text-lg'>1 USDT = 4117.65 Big Eyes</p>
                 <div className='border border-gray-300 border-2 rounded-lg mt-8 flex flex-col justify-between items-center p-8 px-12 sm:p-20 sm:px-32'>
-                  <p className='text-red-400 text-xl font-bold'>1.5B</p>
-                  <p className='text-red-400 text-xl font-bold'>Big Eyes remaining</p>
+                  <p className='text-red-400 text-xl font-bold'>{remaining? remaining : "wait"}</p>
+                  <p className='text-red-400 text-lg font-bold text-center'>{nameTKN? nameTKN: "wait"} remaining</p>
                   <p className='text-sm'>Until 1 USDT = 4117.65 Big Eyes</p>
                   <Buttons txt='Connect Wallet'/>
                   <p className='text-gray-500'>offer code?</p>
@@ -59,8 +93,11 @@ function App() {
               <div className='w-full h-full lg:p-12'>
                 <div className='flex items-center justify-between p-16'>
                   <img className='w-36' src="./image/lucky-cat.png" alt="cat"/>
-                  <div className='bg-gray-500 w-1 h-48' style={{boxSizing:'border-box'}}>
-                    <div className='rounded-full bg-red-300 border-gray-400 border-2 w-6 h-6' style={{transform:'translateY(100%), translateX(50%)'}}></div>
+                  <div id='progressBar' className='relative  bg-gray-200 w-1 h-48' style={{boxSizing:'border-box'}}>
+                    {/* <div ref={progressBarIndicator} id='progressBarIndicator' className='absolute top-0 left-0 rounded-full bg-red-300 border-gray-400 border-2 w-6 h-6'  style={{transform: 'translate(-40%, -50%)'}}></div> */}
+                    <div ref={progressBarIndicator} id='progressBar2' className='w-1 h-0 bg-green-500'></div>
+                    <h1 className='translate-x-4 translate-y-10'>{pourcentage? pourcentage+'%' : 'wait'}</h1>
+                    {/* style={{transform:'translateY(100%), translateX(50%)'}} */}
                   </div>
                 </div>
                 <p className='text-sm text-gray-400 font-bold'>USDT Raised: $6,136,028.61 / $6,450,000.00</p>
