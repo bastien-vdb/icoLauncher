@@ -7,6 +7,17 @@ import { useEffect, useState, useRef } from 'react';
 
 function App() {
 
+  // const [mco, setMCO] = useState();
+  // useEffect(()=>{
+  //   fetch('/api').then((result)=>{
+  //     result.json().then((result2)  =>{
+  //       console.log(result2)
+  //       setMCO(result2);
+  //     })
+  //   })
+  // },[])
+  
+
   const [nameTKN, setNameTKN] = useState(null);
   const [remaining, setRemaining] = useState(null);
   const [pourcentage, setPourcentage] = useState(null);
@@ -19,39 +30,48 @@ function App() {
   const contract = new ethers.Contract( "0xe59De8B98EdCa548fe863EBa341c68f04A673505" , abi , provider );
   const hardCap = 1000;
 
-  async function listenToEvent() {
-    contract.on("Transfer", ()=>{
-      getInfoTKN();
-    })
-  }
+ 
 
-  listenToEvent();
+  
 
-  async function getInfoTKN() {
-    const getNameTKN = await contract.name();
-    setNameTKN(getNameTKN);
+  useEffect(()=>{
 
-    let getSupplied = await contract.totalSupply();
-       setRemaining(1000-getSupplied);
+    async function getInfoTKN() {
+      const getNameTKN = await contract.name();
+      setNameTKN(getNameTKN);
+  
+      let getSupplied = await contract.totalSupply();
+         setRemaining(1000-getSupplied);
+  
+      let getPourcentage = Math.floor(100*(getSupplied/hardCap));
+      setPourcentage(getPourcentage);
+    }
 
-    let getPourcentage = Math.floor(100*(getSupplied/hardCap));
-    setPourcentage(getPourcentage);
-  }
+    // listenToEvent();
+    getInfoTKN();
+
+    async function listenToEvent() {
+      contract.on("Transfer", ()=>{
+        getInfoTKN();
+      })
+    }
+
+  },[])
+  
 
   useEffect(()=>{
     const pourcentCss = pourcentage+'%';
     progressBarIndicator.current.style.height = pourcentCss;
-    console.log('useeffect')
   },[pourcentage]);
   
-  getInfoTKN();
+
 
   return (
     <div>
       <header id="menuHeader" className='flex items-center justify-around' style={{backgroundColor:'pink'}}>
         <img className='h-32 p-6' src="./image/logo-desktop-header.svg" alt="Big Eyes logo"/>
-        <div id="mobileBouton" className='flex flex-col md:flex-row md:items-center my-2'>
-          <button className='px-10 py-3 bg-white rounded-full py-4 font-bold my-4 md:m-2'>Buy Now</button>
+        <div id="mobileBouton" className='flex flex-col md:flex-row md:items-center my-2 gap-3'>
+          <button className='px-10 py-4 bg-white rounded-full font-bold'>Buy Now</button>
           <button className='px-10 py-3 border border-white text-white font-normal  border-4 rounded-full font-bold'>French</button>
         </div>
       </header>
@@ -62,10 +82,10 @@ function App() {
               <img src="./image/presale.png" style={{width:'12em'}}/>
               <h1>100% Secure Zone</h1>
               <div className='text-center p-3'>
-                <p className='my-3'>Big Eyes is the ultimate memecoin platform, and it couldn't be easier to get your hands on the token in our presale.</p>
-                <p className='my-3'>Contract code fully audited by Solidity Finance and shown to be 100% secure. Team fully verified by CoinSniper to ensure anti-rug and complete project security.</p>
-                <p className='my-3'>You can buy direct using USDT, ETH or BNB. After the public sale ends, you'll claim your purchased Big Eyes using the claim page.</p>
-                <div id='divButton' className='flex items-center flex-col justify-center my-10 md:flex-row'>
+                <p className='my-3 lg:text-lg lg:px-20'>Big Eyes is the ultimate memecoin platform, and it couldn't be easier to get your hands on the token in our presale.</p>
+                <p className='my-3 lg:text-lg lg:px-20'>Contract code fully audited by Solidity Finance and shown to be 100% secure. Team fully verified by CoinSniper to ensure anti-rug and complete project security.</p>
+                <p className='my-3 lg:text-lg lg:px-20'>You can buy direct using USDT, ETH or BNB. After the public sale ends, you'll claim your purchased Big Eyes using the claim page.</p>
+                <div id='divButton' className='flex items-center flex-col justify-center my-10 md:flex-row gap-2'>
                   <Buttons txt='Buy'/>
                   <Buttons txt='How to buy'/>
                   <Buttons txt='Talk to us'/>
@@ -110,16 +130,16 @@ function App() {
                 </div>
                 <p className='text-sm text-gray-400 font-bold'>USDT Raised: $6,136,028.61 / $6,450,000.00</p>
                 <div id='loader' className='bg-sky-200 w-fit p-4 h-12 rounded-lg border border-gray-500 border-2 flex justify-center items-center'>
-                  <div className='bg-white w-fit h-10 rounded-lg border border-gray-500 border-2 flex items-center overflow-hidden -translate-x-4'>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 hidden sm:block'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 hidden sm:block'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 hidden sm:block'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 hidden md:block'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 hidden md:block'></div>
-                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full m-0.5 animate-pulse'></div>
+                  <div className='bg-white w-fit h-10 rounded-lg border border-gray-500 border-2 flex items-center overflow-hidden -translate-x-4 p-2 gap-1'>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full hidden sm:block'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full hidden sm:block'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full hidden sm:block'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full hidden md:block'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full hidden md:block'></div>
+                    <div className='bg-red-200 h-6 w-6 border border-gray-500 border-2 rounded-full animate-pulse'></div>
                   </div>
                 </div>
 
@@ -129,11 +149,11 @@ function App() {
         </div>
       </div>
 
-      <div id='bloc3' className='bg-cyan-100 w-full flex flex-col justify-center items-center p-8'>
-        <div className='p-1 xs:p-4 sm:p-10 shadow-xl mt-10 rounded-xl shadow-2xl' style={{backgroundColor:'rgb(255, 254, 245)', borderRadius:'50px'}}>
+      <div id='bloc3' className='bg-cyan-100 w-full flex flex-col justify-center items-center p-8 lg:text-lg'>
+        <div className='xs:p-4 sm:p-10 shadow-xl mt-10 rounded-xl shadow-2xl p-4' style={{backgroundColor:'rgb(255, 254, 245)', borderRadius:'50px'}}>
           <img className='w-32 sm:w-64' style={{transform:'translate(40%, -70%)'}} src="./image/plants1.png" alt='flowerLight'/>
 
-          <div className='lg:flex border-b border-gray-300 border-b-3'>
+          <div className='lg:flex border-b border-gray-300 border-b-3 lg:px-64'>
             <div className='flex flex-col'>
               <h1>How to buy Big Eyes</h1>
               <p className='text-red-400 text-xl font-bold flex items-center my-4x  '>
@@ -153,7 +173,7 @@ function App() {
             <img className='md:w-fit' src="./image/cat_room_2.png" alt="catPC"/>
           </div>
 
-          <div className='my-10'>
+          <div className='my-10 lg:px-64'>
             <p className='text-red-400 text-xl font-bold flex items-center'>
             <svg className='mr-2' width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="7.5" cy="7.5" r="7.5" fill="#F17B87"/>
@@ -168,11 +188,11 @@ function App() {
             <p>You will then have 3 options:</p>
           </div>
           
-          <div className='border-b border-gray-400 border-b-2 lg:flex lg:justify-center'>
-            <div id='sousbloc1' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center lg:w-96 lg:m-2'>
+          <div className='border-b border-gray-400 border-b-2 lg:flex lg:justify-center lg:px-64'>
+            <div id='sousbloc1' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center p-2 lg:w-96 lg:m-2'>
               <img className='h-48' src='./image/Wallet_coins1.png' alt='wallet'/>
               
-              <p className='text-red-400 text-xl font-bold'>Buy ETH or BNB with card</p>
+              <p className='text-center text-red-400 text-xl font-bold'>Buy ETH or BNB with card</p>
               <p className='p-2 text-center'>Visit</p>
               <p className='p-2 text-center'>
               <a className='text-red-400' href="https://www.moonpay.com/buy"> moonpay.com/buy </a>
@@ -185,26 +205,26 @@ function App() {
               </p>
             </div>
 
-            <div id='sousbloc2' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center lg:w-96 lg:m-2'>
+            <div id='sousbloc2' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center p-2 lg:w-96 lg:m-2'>
               <img className='h-48' src='./image/Pawdiamond1.png' alt='wallet'/>
               
-              <p className='text-red-400 text-xl font-bold'>Buy ETH or BNB with card</p>
+              <p className='text-center text-red-400 text-xl font-bold'>Buy ETH or BNB with card</p>
               <p className='p-8 text-center'>Visit
                 Once you have sufficient ETH or BNB in your wallet (if you do not have ETH, USDT or BNB, please read option 1 first), you can now swap your ETH or BNB for Big Eyes. Type in the amount of Big Eyes you wish to purchase ($15 minimum ) and then click “Buy with ETH” or “Buy with BNB”. Your wallet provider will ask you to confirm the transaction and will also show you the cost of gas.
               </p>
             </div>
 
-            <div id='sousbloc3' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center lg:w-96 lg:m-2'>
+            <div id='sousbloc3' className='border border-1 border-gray-400 rounded-2xl my-8 flex flex-col justify-center items-center p-2 lg:w-96 lg:m-2'>
               <img className='h-48' src='./image/phone1.png' alt='wallet'/>
               
-              <p className='text-red-400 text-xl font-bold'>Buy Big Eyes with USDT</p>
+              <p className='text-center text-red-400 text-xl font-bold'>Buy Big Eyes with USDT</p>
               <p className='p-8 text-center'>
                 Please ensure you have at least $20 of USDT in your wallet before commencing the transaction. Type in the amount of Big Eyes you wish to purchase ($15 minimum). Click “Convert USDT”. You will then be asked to approve the purchase TWICE. The first approval is for the USDT contract and the second is for the transaction amount. Please ensure you go through both approval steps in order to complete the transaction.
               </p>
             </div>
           </div>
 
-          <div className='border-b border-gray-400 border-b-2 flex flex-col justify-center items-center'>
+          <div className='border-b border-gray-400 border-b-2 flex flex-col justify-center items-center lg:px-64'>
             <p className='text-red-400 text-xl font-bold flex items-center my-10'>
               <svg className='mr-2' width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="7.5" cy="7.5" r="7.5" fill="#F17B87"/>
@@ -285,11 +305,11 @@ function App() {
             </div>
           </div>
       
-          <div id="TalkToUs" className='p-2 '>
+          <div id="TalkToUs" className='p-2'>
             <h1>Talk to us</h1>
-            <p className='text-red-400 font-bold my-6'>Leave your details below and we’ll contact you to discuss purchasing Big Eyes.</p>
+            <p className='text-red-400 font-bold my-6 lg:text-center'>Leave your details below and we’ll contact you to discuss purchasing Big Eyes.</p>
 
-            <div id='Address_field' className='my-10 p-6'>
+            <div id='Address_field' className='my-10 p-6 lg:px-64'>
               
               <div id='field1' className='flex justify-between'>
                 <p className='border-b-4 border-red-300 flex flex-col w-full'>
@@ -345,7 +365,7 @@ function App() {
         </div>
       </div>
  
-      <footer id='bloc4' className='bg-white flex flex-col' style={{backgroundColor:'#fffef5'}}>
+      <footer id='bloc4' className='bg-white flex flex-col lg:text-lg' style={{backgroundColor:'#fffef5'}}>
         <img className='h-32 my-6' src="./image/logo-desktop-header.svg" alt="Big Eyes logo"/>
         <div className='flex justify-evenly'>
           <ul className='my-6'>
