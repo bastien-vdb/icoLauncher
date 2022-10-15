@@ -4,6 +4,7 @@ import Buttons from './components/Buttons';
 import { ethers } from "ethers";
 import abi from './abi/token';
 import { useEffect, useState, useRef } from 'react';
+import Modals from './Modals';
 
 function App() {
 
@@ -27,12 +28,9 @@ function App() {
 
   /*WEB Connection*/
   const provider = new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/97c0878953c249c8bce26055b5e0ee94");
-  const contract = new ethers.Contract( "0xe59De8B98EdCa548fe863EBa341c68f04A673505" , abi , provider );
-  const hardCap = 1000;
-
- 
-
-  
+  const contract = new ethers.Contract( "0x55D496e7d93565740625D25eec69230812c9e739" , abi , provider );
+  const hardCap = 3000;
+  // 0xe59De8B98EdCa548fe863EBa341c68f04A673505
 
   useEffect(()=>{
 
@@ -41,7 +39,7 @@ function App() {
       setNameTKN(getNameTKN);
   
       let getSupplied = await contract.totalSupply();
-         setRemaining(1000-getSupplied);
+         setRemaining(3000-getSupplied);
   
       let getPourcentage = Math.floor(100*(getSupplied/hardCap));
       setPourcentage(getPourcentage);
@@ -56,6 +54,8 @@ function App() {
       })
     }
 
+    listenToEvent();
+
   },[])
   
 
@@ -63,8 +63,8 @@ function App() {
     const pourcentCss = pourcentage+'%';
     progressBarIndicator.current.style.height = pourcentCss;
   },[pourcentage]);
-  
 
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div>
@@ -86,16 +86,16 @@ function App() {
                 <p className='my-3 lg:text-lg lg:px-20'>Contract code fully audited by Solidity Finance and shown to be 100% secure. Team fully verified by CoinSniper to ensure anti-rug and complete project security.</p>
                 <p className='my-3 lg:text-lg lg:px-20'>You can buy direct using USDT, ETH or BNB. After the public sale ends, you'll claim your purchased Big Eyes using the claim page.</p>
                 <div id='divButton' className='flex items-center flex-col justify-center my-10 md:flex-row gap-2'>
-                  <Buttons txt='Buy'/>
-                  <Buttons txt='How to buy'/>
-                  <Buttons txt='Talk to us'/>
+                  <Buttons href='#connectWallet' txt='Buy'/>
+                  <Buttons href='#howToBuy' txt='How to buy'/>
+                  <Buttons href='#TalkToUs' txt='Talk to us'/>
                 </div>
               </div>
             </div>
           </div>
 
       <div id='bloc2' className='w-full flex flex-col justify-center items-center lg:px-44' style={{backgroundColor:'pink'}}>
-        <div className='w-full p-4' id='sousbloc1'>
+        <div className='w-full p-4' id="connectWallet">
           <div style={{height:'3.75rem', backgroundColor:'#a6e8fe', borderTopLeftRadius:'100px', borderTopRightRadius:'100px', border:'2px solid black'}}>
             <div style={{padding:'1em', marginLeft:'2em', display:'flex'}}>
               <div className='h-6 w-6 bg-red-400 border-2 border-black border rounded-full mr-2'></div>
@@ -108,12 +108,17 @@ function App() {
 
               <div className='lg:border-r-2 lg:border-black lg:p-10 w-full h-full'>
                 <h1>Stage 5 has started!</h1>
-                <p className='text-center text-gray-400 text-lg'>1 USDT = 4117.65 Big Eyes</p>
-                <div className='border border-gray-300 border-2 rounded-lg mt-8 flex flex-col justify-between items-center p-8 px-12 sm:p-20 sm:px-32'>
+                <p className='text-center text-gray-400 text-lg'>1,2 USDT = 100 Big BST</p>
+                <div className='border border-gray-300 border-2 rounded-lg mt-8 flex flex-col gap-2 justify-between items-center p-8 px-12 sm:p-20 sm:px-32'>
                   <p className='text-red-400 text-xl font-bold'>{remaining? remaining : "wait"}</p>
                   <p className='text-red-400 text-lg font-bold text-center'>{nameTKN? nameTKN: "wait"} remaining</p>
-                  <p className='text-sm'>Until 1 USDT = 4117.65 Big Eyes</p>
-                  <Buttons txt='Connect Wallet'/>
+                  <p className='text-sm'>1,2 USDT = 100 Big BST</p>
+                  <Buttons id='dispar' txt="Connect & Buy" onClick={()=>setShowModal(!showModal)}/>
+                  <Modals visible={showModal}/>
+                  <div id='connectedDiv' className='px-6 font-bold text-red-500 font-extrabold text-center hidden'>
+                    <div id='connectedAddress'/>
+                    <div id='connectedBalance' className='text-red-500'/>
+                  </div>
                   <p className='text-gray-500'>offer code?</p>
                 </div>
               </div>
@@ -153,7 +158,7 @@ function App() {
         <div className='xs:p-4 sm:p-10 shadow-xl mt-10 rounded-xl shadow-2xl p-4' style={{backgroundColor:'rgb(255, 254, 245)', borderRadius:'50px'}}>
           <img className='w-32 sm:w-64' style={{transform:'translate(40%, -70%)'}} src="./image/plants1.png" alt='flowerLight'/>
 
-          <div className='lg:flex border-b border-gray-300 border-b-3 lg:px-64'>
+          <div id="howToBuy" className='lg:flex border-b border-gray-300 border-b-3 lg:px-64'>
             <div className='flex flex-col'>
               <h1>How to buy Big Eyes</h1>
               <p className='text-red-400 text-xl font-bold flex items-center my-4x  '>
@@ -241,7 +246,7 @@ function App() {
               We will release details closer to the time, however you will need to visit the main site:
               <span className='text-red-400'>https://bigeyes.space/</span> and click on the pink ‘claim’ button.
             </p>
-            <Buttons txt='Buy now'/>
+            <Buttons href='#connectWallet' txt='Buy now'/>
             <img className='h-48 my-10' src="./image/cat_room_3-1.png" alt="cat_room_3-1"/>
           </div>
 
@@ -256,7 +261,7 @@ function App() {
                   <p className='text-xl'>Address</p>
                   <input size='1' className='text-gray-400 bg-transparent' readOnly value="0xc8De43Bfe33FF496Fa14c270D9CB29Bda196B9B5"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between'>
+                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
@@ -269,7 +274,7 @@ function App() {
                   <p className='text-xl'>Decimals</p>
                   <input size='1' className='text-gray-400 bg-transparent' readOnly value="18"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between'>
+                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
@@ -279,10 +284,10 @@ function App() {
 
               <div id='field3' className='flex justify-center items-center'>
                 <div className='my-6 border-b-4 border-red-300'>
-                  <p className='text-xl'>Token Symbol</p>
+                  <p className='text-xl'> Symbol </p>
                   <input size='1' className='text-gray-400 bg-transparent' readOnly value="BIG"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between'>
+                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
@@ -298,7 +303,7 @@ function App() {
             Contract fully audited by Solidity Finance and shown to be 100% secure.
             Team fully verified by CoinSniper to ensure anti-rug and complete project security.
             </p>
-            <Buttons txt='Buy now'/>
+            <Buttons txt='Whitepaper'/>
             <div className='flex justify-center my-10'>
               <img className='h-20' src='./image/solidify-logo.png' alt='solidify logo'/>
               <img className='h-20' src='./image/coinsniper-logo.png' alt='coinsniper logo'/>
@@ -365,9 +370,10 @@ function App() {
         </div>
       </div>
  
-      <footer id='bloc4' className='bg-white flex flex-col lg:text-lg' style={{backgroundColor:'#fffef5'}}>
+    {/* Footer */}
+      <footer id='bloc4' className='bg-white flex flex-col lg:flex-row lg:justify-evenly lg:text-lg' style={{backgroundColor:'#fffef5'}}>
         <img className='h-32 my-6' src="./image/logo-desktop-header.svg" alt="Big Eyes logo"/>
-        <div className='flex justify-evenly'>
+        <div className='flex justify-evenly lg:gap-10'>
           <ul className='my-6'>
             <li className='font-bold'>About us</li>
             <li>Tokenomics</li>
@@ -380,7 +386,7 @@ function App() {
             <li>Audit</li>
           </ul>
         </div>
-        <div className='flex justify-evenly'>
+        <div className='flex justify-evenly lg:gap-10'>
           <ul className='my-6'>
             <li className='font-bold'>Coming Soon</li>
             <li>NFT</li>
@@ -394,7 +400,6 @@ function App() {
             <li>Linktree</li>
           </ul>
         </div>
-        <div id='blocText' className=''></div>
       </footer>
 
     </div>
