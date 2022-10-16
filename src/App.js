@@ -66,6 +66,17 @@ function App() {
 
   const [showModal, setShowModal] = useState(false);
 
+  const addressField = useRef();
+  const decimalField = useRef();
+  const symbolField = useRef();
+
+  function copytxt(field) {
+    console.log(field.current.value);
+    navigator.clipboard.writeText(field.current.value).then(()=>{
+      alert('text copied');
+    })
+  }
+
   return (
     <div>
       <header id="menuHeader" className='flex items-center justify-around' style={{backgroundColor:'pink'}}>
@@ -259,9 +270,9 @@ function App() {
               <div id='field1' className='flex justify-center items-center'>
                 <div className='my-6 border-b-4 border-red-300'>
                   <p className='text-xl'>Address</p>
-                  <input size='1' className='text-gray-400 bg-transparent' readOnly value="0xc8De43Bfe33FF496Fa14c270D9CB29Bda196B9B5"/>
+                  <input ref={addressField} size='1' className='text-gray-400 bg-transparent' readOnly value="0xc8De43Bfe33FF496Fa14c270D9CB29Bda196B9B5"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
+                <button onClick={()=>copytxt(addressField)} className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
@@ -272,9 +283,9 @@ function App() {
               <div id='field2' className='flex justify-center items-center'>
                 <div className='my-6 border-b-4 border-red-300'>
                   <p className='text-xl'>Decimals</p>
-                  <input size='1' className='text-gray-400 bg-transparent' readOnly value="18"/>
+                  <input ref={decimalField} size='1' className='text-gray-400 bg-transparent' readOnly value="18"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
+                <button onClick={()=>copytxt(decimalField)} className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
@@ -285,9 +296,9 @@ function App() {
               <div id='field3' className='flex justify-center items-center'>
                 <div className='my-6 border-b-4 border-red-300'>
                   <p className='text-xl'> Symbol </p>
-                  <input size='1' className='text-gray-400 bg-transparent' readOnly value="BIG"/>
+                  <input ref={symbolField} size='1' className='text-gray-400 bg-transparent' readOnly value="BIG"/>
                 </div>
-                <button className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
+                <button onClick={()=>copytxt(symbolField)} className='ml-6 bg-red-200 px-10 py-4 rounded-full font-bold text-white flex items-center justify-between gap-1'>
                   Copy   
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
